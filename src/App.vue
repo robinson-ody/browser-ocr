@@ -56,7 +56,6 @@
 
         const worker = createWorker({
           logger: (m) => {
-            console.log(m);
             this.progress = m.progress;
           },
         });
@@ -87,6 +86,8 @@
   }
 
   #foto {
+    width: 100%;
+    height: 100%;
     max-width: 1080px;
     margin-bottom: 10px;
   }
