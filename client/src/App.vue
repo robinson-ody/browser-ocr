@@ -34,24 +34,37 @@
     methods: {
       update() {
         const input = document.getElementById('input');
+        const form_data = new FormData();
+        form_data.append('File', input.files[0]);
 
-        if (input.files && input.files[0]) {
-          var reader = new FileReader();
+        fetch('http://192.168.0.110:8000/api/upload', {
+          method: 'POST',
+          body: form_data,
+        }).then(() => {
+          document
+            .getElementById('foto')
+            .setAttribute(
+              'src',
+              'http://192.168.0.110:8000/images/' + input.files[0].name
+            );
+        });
 
-          reader.onload = (e) => {
-            document
-              .getElementById('foto')
-              .setAttribute('src', e.target.result);
-          };
+        // if (input.files && input.files[0]) {
+        //   var reader = new FileReader();
 
-          reader.readAsDataURL(input.files[0]);
-        }
+        //   reader.onload = (e) => {
+        //     document
+        //       .getElementById('foto')
+        //       .setAttribute('src', e.target.result);
+        //   };
+
+        //   reader.readAsDataURL(input.files[0]);
+        // }
       },
 
       read_image() {
         if (this.loading) return alert('Pembacaan dalam proses.');
         this.loading = true;
-
         const img = document.getElementById('foto');
 
         const worker = createWorker({
