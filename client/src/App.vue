@@ -23,43 +23,33 @@
 
 <script>
   import { createWorker } from 'tesseract.js';
+  import jimp from 'jimp';
 
   export default {
     name: 'App',
 
     data() {
-      return { loading: false, progress: 0 };
+      return { loading: false, progress: 0, filename: '' };
     },
 
     methods: {
-      update() {
+      async update() {
         const input = document.getElementById('input');
+        this.filename = input.files[0].name;
         const form_data = new FormData();
         form_data.append('File', input.files[0]);
+        const url = 'http://192.168.0.110:8000/api/upload';
+        const method = 'POST';
+        const body = form_data;
+        await fetch(url, { method, body });
 
-        fetch('http://192.168.0.110:8000/api/upload', {
-          method: 'POST',
-          body: form_data,
-        }).then(() => {
-          document
-            .getElementById('foto')
-            .setAttribute(
-              'src',
-              'http://192.168.0.110:8000/images/' + input.files[0].name
-            );
-        });
+        const image = await jimp.read(
+          `http://192.168.0.110:8000/images/${this.filename}`
+        );
 
-        // if (input.files && input.files[0]) {
-        //   var reader = new FileReader();
-
-        //   reader.onload = (e) => {
-        //     document
-        //       .getElementById('foto')
-        //       .setAttribute('src', e.target.result);
-        //   };
-
-        //   reader.readAsDataURL(input.files[0]);
-        // }
+        await image.greyscale();
+        const imagebase64 = await image.getBase64Async(jimp.MIME_JPEG);
+        document.getElementById('foto').setAttribute('src', imagebase64);
       },
 
       read_image() {
