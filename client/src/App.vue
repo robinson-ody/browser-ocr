@@ -38,13 +38,13 @@
         this.filename = input.files[0].name;
         const form_data = new FormData();
         form_data.append('File', input.files[0]);
-        const url = 'http://192.168.0.110:8000/api/upload';
+        const url = 'http://localhost:8000/api/upload';
         const method = 'POST';
         const body = form_data;
         await fetch(url, { method, body });
 
         const image = await jimp.read(
-          `http://192.168.0.110:8000/images/${this.filename}`
+          `http://localhost:8000/images/${this.filename}`
         );
 
         await image.greyscale();
